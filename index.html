@@ -26,12 +26,13 @@
         
         .btn-group { display: flex; gap: 10px; margin-top: 10px; align-items: stretch; }
         .btn-group a, .btn-group button { display: flex; align-items: center; justify-content: center; border-radius: 18px; border: none; cursor: pointer; transition: transform 0.1s, opacity 0.2s; text-decoration: none; }
+        .btn-group a:active, .btn-group button:active { transform: scale(0.96); opacity: 0.8; }
         .btn-icon { width: 50px; height: 55px; background: #f1f5f9; font-size: 20px; flex-shrink: 0; } 
         .btn-main { flex-grow: 1; background: var(--dark); color: white; font-size: 17px; font-weight: 700; letter-spacing: 1px; }
         
         .progress-control { margin-top: 25px; padding-top: 20px; border-top: 1px dashed #e2e8f0; }
         .progress-text { font-size: 11px; color: #94a3b8; margin-bottom: 10px; }
-        .input-group { display: flex; justify-content: center; align-items: center; gap: 6px; }
+        .input-group { display: flex; justify-content: center; align-items: center; gap: 6px; flex-wrap: wrap; }
         input[type="number"] { width: 42px; padding: 8px; border: 1px solid #e2e8f0; border-radius: 10px; text-align: center; font-size: 12px; outline: none; }
         .btn-sm { padding: 9px 12px; font-size: 11px; border-radius: 10px; background: var(--gray-btn); color: white; border: none; cursor: pointer; font-weight: 600; }
         .voice-opt { font-size: 12px; color: #64748b; margin-bottom: 12px; display: flex; justify-content: center; align-items: center; gap: 6px; }
@@ -74,6 +75,7 @@
             </div>
             <div id="progressText" class="progress-text">目前國家：讀取中...</div>
             <div class="input-group">
+                <button class="btn-sm" onclick="prevCountry()" style="background:#475569">返回</button>
                 <input type="number" id="targetIndex" placeholder="No.">
                 <button class="btn-sm" onclick="jumpTo()">跳轉</button>
                 <button class="btn-sm" onclick="randomCountry()" style="background:var(--dark)">🎲 隨機</button>
@@ -89,61 +91,32 @@
     let currentEnName = "";
     let currentCapitalEn = "";
 
+    const traditionalFix = {
+        "马来西亚": "馬來西亞", "新加坡": "新加坡", "沙特阿拉伯": "沙烏地阿拉伯", "中国": "中國", "日本": "日本", "韩国": "韓國", "朝鲜": "北韓", "寮国": "寮國", "柬埔寨": "柬埔寨", "缅甸": "緬甸", "泰国": "泰國", "菲律宾": "菲律賓", "印度尼西亚": "印尼", "文莱": "汶萊", "哈萨克斯坦": "哈薩克", "吉尔吉斯斯坦": "吉爾吉斯", "塔吉克斯坦": "塔吉克", "乌兹别克斯坦": "烏茲別克", "土库曼斯坦": "土庫曼", "也门": "葉門", "叙利亚": "敘利亞", "约旦": "約旦", "黎巴嫩": "黎巴嫩", "以色列": "以色列", "巴勒斯坦": "巴勒斯坦", "伊拉克": "伊拉克", "伊朗": "伊朗", "希腊": "希臘", "意大利": "義大利", "俄罗斯": "俄羅斯", "德国": "德國", "法国": "法國", "英国": "英國", "美国": "美國", "加拿大": "加拿大", "澳大利亚": "澳洲", "新西兰": "紐西蘭"
+    };
+
     const regionMap = { 'Asia': '亞洲', 'Europe': '歐洲', 'Africa': '非洲', 'Oceania': '大洋洲', 'Americas': '美洲', 'Antarctica': '南極洲' };
-    
-    // 擴充後的語言數據庫
     const languageGreetingMap = {
-        'zho': { word: "你好", lang: "zh-TW" },
-        'eng': { word: "Hello", lang: "en-US" },
-        'fra': { word: "Bonjour", lang: "fr-FR" },
-        'spa': { word: "Hola", lang: "es-ES" },
-        'jpn': { word: "こんにちは", lang: "ja-JP" },
-        'kor': { word: "안녕하세요", lang: "ko-KR" },
-        'deu': { word: "Guten Tag", lang: "de-DE" },
-        'ita': { word: "Ciao", lang: "it-IT" },
-        'tha': { word: "สวัสดี", lang: "th-TH" },
-        'vie': { word: "Xin chào", lang: "vi-VN" },
-        'rus': { word: "Привет", lang: "ru-RU" },
-        'por': { word: "Olá", lang: "pt-BR" },
-        'ara': { word: "مرحباً", lang: "ar-SA" },
-        'hin': { word: "नमस्ते", lang: "hi-IN" },
-        'msa': { word: "Selamat", lang: "ms-MY" },
-        'ind': { word: "Halo", lang: "id-ID" },
-        'tur': { word: "Merhaba", lang: "tr-TR" },
-        'nld': { word: "Hallo", lang: "nl-NL" },
-        'ell': { word: "Γεια σας", lang: "el-GR" },
-        'dan': { word: "Hej", lang: "da-DK" },
-        'swe': { word: "Hej", lang: "sv-SE" },
-        'nor': { word: "Hallo", lang: "nb-NO" },
-        'pol': { word: "Cześć", lang: "pl-PL" },
-        'fin': { word: "Hei", lang: "fi-FI" },
-        'ces': { word: "Ahoj", lang: "cs-CZ" },
-        'hun': { word: "Szia", lang: "hu-HU" },
-        'ron': { word: "Bună", lang: "ro-RO" }
+        'zho': { word: "你好", lang: "zh-TW" }, 'eng': { word: "Hello", lang: "en-US" }, 'fra': { word: "Bonjour", lang: "fr-FR" }, 'spa': { word: "Hola", lang: "es-ES" }, 'jpn': { word: "こんにちは", lang: "ja-JP" }, 'kor': { word: "안녕하세요", lang: "ko-KR" }, 'deu': { word: "Guten Tag", lang: "de-DE" }, 'ita': { word: "Ciao", lang: "it-IT" }, 'tha': { word: "สวัสดี", lang: "th-TH" }, 'vie': { word: "Xin chào", lang: "vi-VN" }, 'rus': { word: "Привет", lang: "ru-RU" }, 'por': { word: "Olá", lang: "pt-BR" }, 'ara': { word: "مرحباً", lang: "ar-SA" }, 'hin': { word: "नमस्ते", lang: "hi-IN" }, 'msa': { word: "Selamat", lang: "ms-MY" }, 'ind': { word: "Halo", lang: "id-ID" }, 'tur': { word: "Merhaba", lang: "tr-TR" }, 'nld': { word: "Hallo", lang: "nl-NL" }, 'ell': { word: "Γεια σας", lang: "el-GR" }, 'dan': { word: "Hej", lang: "da-DK" }, 'swe': { word: "Hej", lang: "sv-SE" }, 'nor': { word: "Hallo", lang: "nb-NO" }
     };
 
     async function fetchCountries() {
         try {
             const response = await fetch('https://restcountries.com/v3.1/all?fields=name,translations,flags,continents,capital,languages,population');
-            if (!response.ok) throw new Error();
             const data = await response.json();
             data.sort((a, b) => a.name.common.localeCompare(b.name.common));
 
             allCountries = data.map(c => {
-                const zh = c.translations?.zho?.common || c.name.common;
+                let zh = c.translations?.zho?.common || c.name.common;
+                zh = traditionalFix[zh] || zh;
                 const en = c.name.common;
                 const langList = c.languages ? Object.values(c.languages).join(', ') : '不詳';
-                
                 let greet = { word: "Hello", lang: "en-US" };
                 if (c.languages) {
                     for (let key of Object.keys(c.languages)) {
-                        if (languageGreetingMap[key]) {
-                            greet = languageGreetingMap[key];
-                            break;
-                        }
+                        if (languageGreetingMap[key]) { greet = languageGreetingMap[key]; break; }
                     }
                 }
-
                 return {
                     zhName: zh, enName: en, flag: c.flags.png,
                     region: `${regionMap[c.continents[0]] || c.continents[0]} (${c.continents[0]})`,
@@ -161,7 +134,7 @@
             currentIndex = saved ? parseInt(saved) : 0;
             updateDisplay();
         } catch (e) {
-            document.getElementById('countryName').innerHTML = "連線超時<br><button onclick='location.reload()' style='font-size:12px; background:#475569; color:white; border:none; padding:8px 15px; border-radius:10px; margin-top:15px;'>點我重新整理</button>";
+            document.getElementById('countryName').innerText = "連線失敗，請重啟";
         }
     }
 
@@ -170,7 +143,6 @@
         const c = allCountries[currentIndex];
         currentEnName = c.enName;
         currentCapitalEn = c.capital;
-
         document.getElementById('flagImg').src = c.flag;
         document.getElementById('region').innerText = c.region;
         document.getElementById('countryName').innerText = c.zhName;
@@ -182,10 +154,8 @@
         document.getElementById('wikiLink').href = c.wiki;
         document.getElementById('ytLink').href = c.ytSearch;
         document.getElementById('progressText').innerText = `目前國家：第 ${currentIndex + 1} 個 / 共 ${allCountries.length} 個`;
-        
         document.getElementById('greetBox').onclick = () => speakText(c.greet.word, c.greet.lang);
         localStorage.setItem('globite_idx', currentIndex);
-
         if (document.getElementById('autoVoice').checked) { 
             setTimeout(() => speakText(currentEnName, 'en-US'), 300); 
         }
@@ -201,6 +171,7 @@
     }
 
     function nextCountry() { currentIndex = (currentIndex + 1) % allCountries.length; updateDisplay(); }
+    function prevCountry() { currentIndex = (currentIndex - 1 + allCountries.length) % allCountries.length; updateDisplay(); }
     function randomCountry() { currentIndex = Math.floor(Math.random() * allCountries.length); updateDisplay(); }
     function jumpTo() {
         const input = document.getElementById('targetIndex');
@@ -211,6 +182,5 @@
 
     fetchCountries();
 </script>
-
 </body>
 </html>
