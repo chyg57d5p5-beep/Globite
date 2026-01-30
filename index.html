@@ -12,14 +12,13 @@
         .image-container { width: 100%; height: 180px; background: #eee; cursor: pointer; position: relative; }
         .image-container img { width: 100%; height: 100%; object-fit: contain; }
         .image-container::after { content: "🔊"; position: absolute; bottom: 10px; right: 10px; font-size: 20px; opacity: 0.5; }
-        .content { padding: 24px; }
         
-        /* Region 標籤優化：移除括弧，空白區隔 */
+        .content { padding: 24px; }
         .tag { display: inline-block; background: #f1f5f9; padding: 6px 18px; border-radius: 50px; font-size: 11px; color: #64748b; margin-bottom: 12px; font-weight: 500; letter-spacing: 0.3px; }
         
         h1 { margin: 5px 0; font-size: 26px; color: #0f172a; line-height: 1.1; cursor: pointer; letter-spacing: -0.5px; }
-        .sub-info { font-size: 16px; color: #64748b; font-weight: 500; margin-top: 6px; }
-        .pop-info { font-size: 12px; color: #94a3b8; margin-top: 4px; }
+        .sub-row { font-size: 14px; color: #94a3b8; font-weight: normal; margin-top: 6px; display: flex; justify-content: center; gap: 10px; align-items: center; }
+        .zh-name { color: #64748b; font-weight: 500; }
 
         .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 20px 0; text-align: left; }
         .info-item { background: #f8fafc; padding: 12px; border-radius: 16px; border: 1px solid #edf2f7; cursor: pointer; transition: background 0.2s; height: 85px; display: flex; flex-direction: column; justify-content: center; }
@@ -50,19 +49,22 @@
         <img id="flagImg" src="" alt="國旗">
     </div>
     <div class="content">
-        <div id="region" class="tag">LOADING</div>
+        <div id="region" class="tag">載入中...</div>
         <h1 id="countryEn" onclick="speakText(currentEnName, 'en-US')">-</h1>
-        <div id="countryZh" class="sub-info">-</div>
-        <div id="countryPop" class="pop-info">👥 -</div>
+        <div class="sub-row">
+            <span id="countryZh" class="zh-name">-</span>
+            <span>|</span>
+            <span id="countryPop">👥 -</span>
+        </div>
         
         <div class="info-grid">
             <div class="info-item" onclick="speakText(currentCapitalEn, 'en-US')">
-                <span class="label">CAPITAL 🔊</span>
+                <span class="label">官方首都 🔊</span>
                 <span id="capital" class="value" style="color:var(--primary)">-</span>
-                <a id="capitalLink" href="#" target="_blank" style="font-size: 9px; text-decoration: none; color: #94a3b8; margin-top: 6px;">📍 VIEW MAP</a>
+                <a id="capitalLink" href="#" target="_blank" style="font-size: 9px; text-decoration: none; color: #94a3b8; margin-top: 6px;">📍 地圖查看</a>
             </div>
             <div class="info-item" id="greetBox">
-                <span class="label">GREETING 🔊</span>
+                <span class="label">在地問候 🔊</span>
                 <span id="greeting" class="value">-</span>
                 <div id="languages" class="small-lang">-</div>
             </div>
@@ -97,8 +99,8 @@
     let currentEnName = "";
     let currentCapitalEn = "";
 
-    const s2t = {"国":"國","马":"馬","来":"來","亚":"亞","新":"新","加":"加","坡":"坡","沙":"沙","特":"特","韩":"韓","朝":"朝","鲜":"鮮","寮":"寮","越":"越","南":"南","缅":"緬","甸":"甸","菲":"菲","律":"律","宾":"賓","印":"印","度":"度","尼":"尼","西":"西","哈":"哈","萨":"薩","克":"克","吉":"吉","尔":"爾","斯":"斯","坦":"坦","塔":"塔","乌":"烏","兹":"茲","别":"別","土":"土","库":"庫","曼":"曼","也":"葉","叙":"敘","利亚":"利亞","约":"約","旦":"旦","黎":"黎","以":"以","色列":"色列","巴":"巴","勒":"勒","斯":"斯","伊":"伊","拉克":"拉克","朗":"朗","德":"德","法":"法","俄":"俄","罗":"羅","英":"英","美":"美","澳洲":"澳洲","澳":"澳","纽":"紐","兰":"蘭","西兰":"西蘭","群岛":"群島","斯里":"斯里","兰卡":"蘭卡","孟":"孟","加拉":"加拉","尔":"爾","代":"代","夫":"夫","几":"幾","内":"內","亚":"亞","圣":"聖"};
-    const regionNames = { 'Asia': '亞洲', 'Europe': '歐洲', 'Africa': '非洲', 'Oceania': '大洋洲', 'Americas': '美洲', 'Antarctica': '南極洲', 'South-Eastern Asia': '東南亞', 'Central Asia': '中亞', 'Western Asia': '西亞', 'Eastern Asia': '東亞', 'Southern Asia': '南亞', 'Northern Europe': '北歐', 'Southern Europe': '南歐', 'Western Europe': '西歐', 'Eastern Europe': '東歐', 'Central Europe': '中歐', 'Northern Africa': '北非', 'Western Africa': '西費', 'Eastern Africa': '東非', 'Middle Africa': '中非', 'Southern Africa': '南非', 'North America': '北美洲', 'South America': '南美洲', 'Central America': '中美洲', 'Caribbean': '加勒比海地區' };
+    const s2t = {"国":"國","马":"馬","来":"來","亚":"亞","新":"新","加":"加","坡":"坡","沙":"沙","特":"特","韩":"韓","朝":"朝","鲜":"鮮","寮":"寮","越":"越","南":"南","缅":"緬","甸":"甸","菲":"菲","律":"律","宾":"賓","印":"印","度":"度","尼":"尼","西":"西","哈":"哈","萨":"薩","克":"克","吉":"吉","尔":"爾","斯":"斯","坦":"坦","塔":"塔","乌":"烏","兹":"茲","别":"別","土":"土","库":"庫","曼":"曼","也":"葉","叙":"敘","利亚":"利亞","约":"約","旦":"旦","黎":"黎","以":"以","色列":"色列","巴":"巴","勒":"勒","斯":"斯","伊":"伊","拉克":"拉克","朗":"朗","德":"德","法":"法","俄":"俄","罗":"羅","英":"英","美":"美","澳洲":"澳洲","澳":"澳","纽":"紐","兰":"蘭","西兰":"西蘭","群岛":"群島","斯里":"斯里","蘭卡":"蘭卡","孟":"孟","加拉":"加拉","尔":"爾","代":"代","夫":"夫","几":"幾","内":"內","亚":"亞","圣":"聖"};
+    const regionNames = { 'Asia': '亞洲', 'Europe': '歐洲', 'Africa': '非洲', 'Oceania': '大洋洲', 'Americas': '美洲', 'Antarctica': '南極洲', 'South-Eastern Asia': '東南亞', 'Central Asia': '中亞', 'Western Asia': '西亞', 'Eastern Asia': '東亞', 'Southern Asia': '南亞', 'Northern Europe': '北歐', 'Southern Europe': '南歐', 'Western Europe': '西歐', 'Eastern Europe': '東歐', 'Central Europe': '中歐', 'Northern Africa': '北非', 'Western Africa': '西非', 'Eastern Africa': '東非', 'Middle Africa': '中非', 'Southern Africa': '南非', 'North America': '北美洲', 'South America': '南美洲', 'Central America': '中美洲', 'Caribbean': '加勒比海地區' };
 
     function forceTC(str) {
         if (!str || str === "-") return "-";
@@ -125,11 +127,8 @@
                         if (languageGreetingMap[key]) { greet = languageGreetingMap[key]; break; }
                     }
                 }
-                
-                // 調整 Region 顯示：中文 英文 (無括弧)
                 let rawReg = c.subregion || c.continents[0];
                 let displayRegion = regionNames[rawReg] ? `${regionNames[rawReg]} ${rawReg}` : forceTC(rawReg);
-
                 return {
                     zhName: zh, enName: en, flag: c.flags.png,
                     region: displayRegion,
