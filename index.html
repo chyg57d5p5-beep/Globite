@@ -26,6 +26,7 @@
         
         .btn-group { display: flex; gap: 10px; margin-top: 10px; align-items: stretch; }
         .btn-group a, .btn-group button { display: flex; align-items: center; justify-content: center; border-radius: 18px; border: none; cursor: pointer; transition: transform 0.1s, opacity 0.2s; text-decoration: none; }
+        .btn-group a:active, .btn-group button:active { transform: scale(0.96); opacity: 0.8; }
         .btn-icon { width: 50px; height: 55px; background: #f1f5f9; font-size: 20px; flex-shrink: 0; } 
         .btn-main { flex-grow: 1; background: var(--dark); color: white; font-size: 17px; font-weight: 700; letter-spacing: 1px; }
         
@@ -33,9 +34,12 @@
         .progress-text { font-size: 11px; color: #94a3b8; margin-bottom: 10px; }
         .input-group { display: flex; justify-content: center; align-items: center; gap: 6px; flex-wrap: wrap; }
         input[type="number"] { width: 42px; padding: 8px; border: 1px solid #e2e8f0; border-radius: 10px; text-align: center; font-size: 12px; outline: none; }
-        /* 統一輔助按鈕樣式：灰底白字 */
-        .btn-sm { padding: 9px 12px; font-size: 11px; border-radius: 10px; background: var(--gray-btn); color: white; border: none; cursor: pointer; font-weight: 600; }
+        
+        .btn-sm { padding: 9px 12px; font-size: 11px; border-radius: 10px; border: none; cursor: pointer; font-weight: 600; transition: opacity 0.2s; }
+        .bg-gray { background: var(--gray-btn); color: white; }
+        .bg-black { background: var(--dark); color: white; }
         .btn-sm:active { opacity: 0.7; }
+        
         .voice-opt { font-size: 12px; color: #64748b; margin-bottom: 12px; display: flex; justify-content: center; align-items: center; gap: 6px; }
     </style>
 </head>
@@ -76,11 +80,11 @@
             </div>
             <div id="progressText" class="progress-text">目前國家：讀取中...</div>
             <div class="input-group">
-                <button class="btn-sm" onclick="prevCountry()">返回</button>
+                <button class="btn-sm bg-gray" onclick="prevCountry()">返回</button>
                 <input type="number" id="targetIndex" placeholder="No.">
-                <button class="btn-sm" onclick="jumpTo()">跳轉</button>
-                <button class="btn-sm" onclick="randomCountry()">隨機</button>
-                <button class="btn-sm" onclick="resetProgress()">重置</button>
+                <button class="btn-sm bg-gray" onclick="jumpTo()">跳轉</button>
+                <button class="btn-sm bg-black" onclick="randomCountry()">🎲 隨機</button>
+                <button class="btn-sm bg-gray" onclick="resetProgress()" style="background:#cbd5e1; color:#475569;">重置</button>
             </div>
         </div>
     </div>
