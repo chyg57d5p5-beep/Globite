@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>每日一國 My World App</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <style>
+        :root {
+            --primary: #2563eb;
+            --bg: #f8fafc;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #1e293b;
+        }
+        .card {
+            background: white;
+            width: 85%;
+            max-width: 350px;
+            padding: 25px;
+            border-radius: 24px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .flag { font-size: 64px; margin-bottom: 10px; }
+        h1 { margin: 10px 0; font-size: 28px; }
+        p { color: #64748b; line-height: 1.6; }
+        .tag {
+            display: inline-block;
+            background: #e2e8f0;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-bottom: 20px;
+        }
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            width: 100%;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        button:active { transform: scale(0.95); }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <div id="flag" class="flag">🌍</div>
+    <div id="region" class="tag">點擊下方按鈕開始</div>
+    <h1 id="countryName">準備好了嗎？</h1>
+    <p id="desc">每天花一分鐘，認識一個新的國家。</p>
+    <button onclick="nextCountry()">換下一個國家</button>
+</div>
+
+<script>
+    // 這裡可以持續增加你的國家清單
+    const countries = [
+        { name: "冰島 Iceland", flag: "🇮🇸", region: "歐洲", desc: "擁有壯觀的火山與冰河，是世界上最安全的國家之一。" },
+        { name: "不丹 Bhutan", flag: "🇧🇹", region: "亞洲", desc: "以「幸福指數」聞名，坐落在喜馬拉雅山脈間的神祕國度。" },
+        { name: "摩洛哥 Morocco", flag: "🇲🇦", region: "非洲", desc: "充滿色彩的市集與撒哈拉沙漠，文化交融的奇幻之地。" },
+        { name: "秘魯 Peru", flag: "🇵🇪", region: "南美洲", desc: "印加文明的發源地，擁有世界遺產馬丘比丘。" }
+    ];
+
+    function nextCountry() {
+        const random = Math.floor(Math.random() * countries.length);
+        const c = countries[random];
+        
+        document.getElementById('flag').innerText = c.flag;
+        document.getElementById('region').innerText = c.region;
+        document.getElementById('countryName').innerText = c.name;
+        document.getElementById('desc').innerText = c.desc;
+    }
+</script>
+
+</body>
+</html>
