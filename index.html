@@ -9,33 +9,24 @@
         :root { --primary: #2563eb; --bg: #f1f5f9; --dark: #1e293b; --yt-soft: #f87171; --gray-btn: #64748b; }
         body { font-family: -apple-system, system-ui, sans-serif; background-color: var(--bg); margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px 0; }
         .card { background: white; width: 90%; max-width: 380px; border-radius: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.08); overflow: hidden; text-align: center; }
-        
-        /* 國旗容器優化：背景改為白色以融合卡片 */
         .image-container { width: 100%; height: 180px; background: white; cursor: pointer; position: relative; display: flex; align-items: center; justify-content: center; }
         .image-container img { width: 100%; height: 100%; object-fit: contain; }
         .image-container::after { content: "🔊"; position: absolute; bottom: 10px; right: 15px; font-size: 20px; opacity: 0.3; }
-        
         .content { padding: 24px; }
         .tag { display: inline-block; background: #f1f5f9; padding: 6px 18px; border-radius: 50px; font-size: 11px; color: #64748b; margin-bottom: 12px; font-weight: 500; letter-spacing: 0.3px; }
-        
         h1 { margin: 5px 0; font-size: 28px; color: #0f172a; line-height: 1.1; cursor: pointer; letter-spacing: -0.5px; }
-        
-        /* 資訊列：中文名與人口數樣式完全一致 */
         .sub-row { font-size: 12px; color: #94a3b8; font-weight: normal; margin-top: 8px; display: flex; justify-content: center; gap: 8px; align-items: center; }
         .zh-name { color: #94a3b8; }
-
         .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 20px 0; text-align: left; }
         .info-item { background: #f8fafc; padding: 12px; border-radius: 16px; border: 1px solid #edf2f7; cursor: pointer; transition: background 0.2s; height: 85px; display: flex; flex-direction: column; justify-content: center; }
         .info-item:active { background: #f1f5f9; }
         .label { color: #94a3b8; font-size: 10px; display: block; margin-bottom: 4px; }
         .value { font-weight: 600; color: #334155; font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .small-lang { font-size: 9px; color: #94a3b8; font-weight: normal; margin-top: 4px; line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        
         .btn-group { display: flex; gap: 10px; margin-top: 10px; align-items: stretch; }
         .btn-group a, .btn-group button { display: flex; align-items: center; justify-content: center; border-radius: 18px; border: none; cursor: pointer; transition: transform 0.1s, opacity 0.2s; text-decoration: none; }
         .btn-icon { width: 50px; height: 55px; background: #f1f5f9; font-size: 20px; flex-shrink: 0; } 
         .btn-main { flex-grow: 1; background: var(--dark); color: white; font-size: 17px; font-weight: 700; letter-spacing: 1px; }
-        
         .progress-control { margin-top: 25px; padding-top: 20px; border-top: 1px dashed #e2e8f0; }
         .progress-text { font-size: 11px; color: #94a3b8; margin-bottom: 10px; }
         .input-group { display: flex; justify-content: center; align-items: center; gap: 6px; flex-wrap: wrap; }
@@ -60,7 +51,6 @@
             <span>|</span>
             <span id="countryPop">👥 -</span>
         </div>
-        
         <div class="info-grid">
             <div class="info-item" onclick="speakText(currentCapitalEn, 'en-US')">
                 <span class="label">官方首都 🔊</span>
@@ -73,13 +63,11 @@
                 <div id="languages" class="small-lang">-</div>
             </div>
         </div>
-
         <div class="btn-group">
             <a id="wikiLink" href="#" target="_blank" class="btn-icon">📖</a>
             <a id="ytLink" href="#" target="_blank" class="btn-icon"><span style="color:var(--yt-soft);">▶</span></a>
             <button onclick="nextCountry()" class="btn-main">出發！下一站</button>
         </div>
-
         <div class="progress-control">
             <div class="voice-opt">
                 <input type="checkbox" id="autoVoice" checked> 
@@ -104,7 +92,16 @@
     let currentCapitalEn = "";
 
     const s2t = {"国":"國","马":"馬","来":"來","亚":"亞","新":"新","加":"加","坡":"坡","沙":"沙","特":"特","韩":"韓","朝":"朝","鲜":"鮮","寮":"寮","越":"越","南":"南","缅":"緬","甸":"甸","菲":"菲","律":"律","宾":"賓","印":"印","度":"度","尼":"尼","西":"西","哈":"哈","萨":"薩","克":"克","吉":"吉","尔":"爾","斯":"斯","坦":"坦","塔":"塔","乌":"烏","兹":"茲","别":"別","土":"土","库":"庫","曼":"曼","也":"葉","叙":"敘","利亚":"利亞","约":"約","旦":"旦","黎":"黎","以":"以","色列":"色列","巴":"巴","勒":"勒","斯":"斯","伊":"伊","拉克":"拉克","朗":"朗","德":"德","法":"法","俄":"俄","罗":"羅","英":"英","美":"美","澳洲":"澳洲","澳":"澳","纽":"紐","兰":"蘭","西兰":"西蘭","群岛":"群島","斯里":"斯里","蘭卡":"蘭卡","孟":"孟","加拉":"加拉","尔":"爾","代":"代","夫":"夫","几":"幾","内":"內","亚":"亞","圣":"聖"};
-    const regionNames = { 'Asia': '亞洲', 'Europe': '歐洲', 'Africa': '非洲', 'Oceania': '大洋洲', 'Americas': '美洲', 'Antarctica': '南極洲', 'South-Eastern Asia': '東南亞', 'Central Asia': '中亞', 'Western Asia': '西亞', 'Eastern Asia': '東亞', 'Southern Asia': '南亞', 'Northern Europe': '北歐', 'Southern Europe': '南歐', 'Western Europe': '西歐', 'Eastern Europe': '東歐', 'Central Europe': '中歐', 'Northern Africa': '北非', 'Western Africa': '西非', 'Eastern Africa': '東非', 'Middle Africa': '中非', 'Southern Africa': '南非', 'North America': '北美洲', 'South America': '南美洲', 'Central America': '中美洲', 'Caribbean': '加勒比海地區' };
+    
+    // 擴充後的完整對照表
+    const regionNames = { 
+        'Asia': '亞洲', 'Europe': '歐洲', 'Africa': '非洲', 'Oceania': '大洋洲', 'Americas': '美洲', 'Antarctica': '南極洲',
+        'South-Eastern Asia': '東南亞', 'Central Asia': '中亞', 'Western Asia': '西亞', 'Eastern Asia': '東亞', 'Southern Asia': '南亞',
+        'Northern Europe': '北歐', 'Southern Europe': '南歐', 'Western Europe': '西歐', 'Eastern Europe': '東歐', 'Central Europe': '中歐',
+        'Southeast Europe': '東南歐', 'Northern Africa': '北非', 'Western Africa': '西非', 'Eastern Africa': '東非', 'Middle Africa': '中非', 'Southern Africa': '南非',
+        'North America': '北美洲', 'South America': '南美洲', 'Central America': '中美洲', 'Caribbean': '加勒比海地區',
+        'Polynesia': '波里尼西亞', 'Melanesia': '美拉尼西亞', 'Micronesia': '密克羅尼西亞', 'Australia and New Zealand': '澳洲與紐西蘭'
+    };
 
     function forceTC(str) {
         if (!str || str === "-") return "-";
