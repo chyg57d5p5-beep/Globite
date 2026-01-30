@@ -6,7 +6,7 @@
     <title>Globite - 每日一國</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <style>
-        :root { --primary: #2563eb; --bg: #f1f5f9; --dark: #1e293b; --danger: #ef4444; }
+        :root { --primary: #2563eb; --bg: #f1f5f9; --dark: #1e293b; --danger: #ef4444; --yt: #ff0000; }
         body { font-family: -apple-system, system-ui, sans-serif; background-color: var(--bg); margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px 0; }
         .card { background: white; width: 90%; max-width: 380px; border-radius: 28px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); overflow: hidden; text-align: center; }
         .image-container { width: 100%; height: 180px; background: #eee; cursor: pointer; position: relative; }
@@ -20,18 +20,20 @@
         .label { color: #94a3b8; font-size: 10px; display: block; }
         .value { font-weight: 600; color: #334155; font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .capital-link { color: var(--primary); text-decoration: none; display: flex; align-items: center; gap: 4px; }
-        .btn-group { display: flex; gap: 8px; margin-top: 10px; }
-        button { flex: 1; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; }
-        button.secondary { background: #f1f5f9; color: #475569; font-size: 14px; }
+        
+        .btn-group { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
+        .btn-group a, .btn-group button { flex: 1; min-width: 80px; }
+        button { background: var(--primary); color: white; border: none; padding: 12px 5px; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; width: 100%; transition: opacity 0.2s; }
+        button:active { opacity: 0.7; }
+        button.secondary { background: #f1f5f9; color: #475569; }
+        button.yt-btn { background: #fee2e2; color: var(--yt); }
+        
         .progress-control { margin-top: 20px; padding-top: 15px; border-top: 1px dashed #e2e8f0; }
         .progress-text { font-size: 11px; color: #94a3b8; margin-bottom: 8px; }
         .input-group { display: flex; justify-content: center; align-items: center; gap: 5px; }
-        input[type="number"] { width: 45px; padding: 6px; border: 1px solid #cbd5e1; border-radius: 8px; text-align: center; font-size: 12px; }
-        .btn-sm { padding: 8px 10px; font-size: 11px; border-radius: 8px; background: #64748b; color: white; border: none; cursor: pointer; font-weight: 600; transition: opacity 0.2s; }
-        .btn-sm:active { opacity: 0.7; }
-        /* 黑色按鈕樣式 */
+        input[type="number"] { width: 40px; padding: 6px; border: 1px solid #cbd5e1; border-radius: 8px; text-align: center; font-size: 12px; }
+        .btn-sm { padding: 8px 8px; font-size: 11px; border-radius: 8px; background: #64748b; color: white; border: none; cursor: pointer; font-weight: 600; }
         .btn-black { background: var(--dark); }
-        /* 紅色按鈕樣式 */
         .btn-red { background: var(--danger); }
         .voice-opt { font-size: 12px; color: #64748b; margin-bottom: 12px; display: flex; justify-content: center; align-items: center; gap: 5px; }
     </style>
@@ -60,8 +62,9 @@
         </div>
 
         <div class="btn-group">
-            <a id="wikiLink" href="#" target="_blank" style="flex:1"><button class="secondary">百科介紹</button></a>
-            <button onclick="nextCountry()" style="flex:1.5">下一站</button>
+            <a id="wikiLink" href="#" target="_blank"><button class="secondary">百科</button></a>
+            <a id="ytLink" href="#" target="_blank"><button class="yt-btn">📺 影片</button></a>
+            <button onclick="nextCountry()" style="flex: 1.2; background: var(--primary);">下一站</button>
         </div>
 
         <div class="progress-control">
@@ -69,7 +72,7 @@
                 <input type="checkbox" id="autoVoice" checked> 
                 <label for="autoVoice">自動朗讀國名 (EN)</label>
             </div>
-            <div id="progressText" class="progress-text">讀取進度中...</div>
+            <div id="progressText" class="progress-text">讀取中...</div>
             <div class="input-group">
                 <input type="number" id="targetIndex" placeholder="No.">
                 <button class="btn-sm" onclick="jumpTo()">跳轉</button>
@@ -81,7 +84,6 @@
 </div>
 
 <script>
-    // ... JavaScript 部分保持不變 ...
     let allCountries = [];
     let currentIndex = 0;
     let currentEnName = "";
@@ -94,16 +96,22 @@
             const data = await response.json();
             data.sort((a, b) => a.name.common.localeCompare(b.name.common));
 
-            allCountries = data.map(c => ({
-                zhName: c.translations?.zho?.common || c.name.common,
-                enName: c.name.common,
-                flag: c.flags.png,
-                region: `${regionMap[c.continents[0]] || c.continents[0]} (${c.continents[0]})`,
-                capital: c.capital ? c.capital[0] : '無',
-                population: c.population ? c.population.toLocaleString() : '不詳',
-                wiki: `https://zh.wikipedia.org/wiki/${c.translations?.zho?.common || c.name.common}`,
-                capitalMap: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((c.capital ? c.capital[0] : '') + ' ' + c.name.common)}`
-            }));
+            allCountries = data.map(c => {
+                const zh = c.translations?.zho?.common || c.name.common;
+                const en = c.name.common;
+                return {
+                    zhName: zh,
+                    enName: en,
+                    flag: c.flags.png,
+                    region: `${regionMap[c.continents[0]] || c.continents[0]} (${c.continents[0]})`,
+                    capital: c.capital ? c.capital[0] : '無',
+                    population: c.population ? c.population.toLocaleString() : '不詳',
+                    wiki: `https://zh.wikipedia.org/wiki/${zh}`,
+                    // 精準搜尋 Geography Now 的邏輯
+                    ytSearch: `https://www.youtube.com/results?search_query=${encodeURIComponent('Geography Now ' + en + ' ' + zh)}`,
+                    capitalMap: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(c.capital ? c.capital[0] + ',' + en : en)}`
+                };
+            });
 
             const saved = localStorage.getItem('globite_idx');
             currentIndex = saved ? parseInt(saved) : 0;
@@ -122,6 +130,7 @@
         document.getElementById('capital').innerText = c.capital;
         document.getElementById('population').innerText = c.population;
         document.getElementById('wikiLink').href = c.wiki;
+        document.getElementById('ytLink').href = c.ytSearch;
         document.getElementById('capitalLink').href = c.capitalMap;
         
         document.getElementById('progressText').innerText = `目前位置：第 ${currentIndex + 1} 個 / 共 ${allCountries.length} 個`;
@@ -158,13 +167,11 @@
             currentIndex = val - 1;
             updateDisplay();
             input.value = ""; 
-        } else {
-            alert(`請輸入 1 到 ${allCountries.length} 之間的編號`);
         }
     }
 
     function resetProgress() {
-        if (confirm("要重置進度回到第 1 個國家嗎？")) {
+        if (confirm("要重置進度嗎？")) {
             currentIndex = 0;
             updateDisplay();
         }
